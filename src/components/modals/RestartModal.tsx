@@ -12,6 +12,17 @@ export const RestartModal: React.FC<RestartModalProps> = ({
   onCancel,
   onRestart,
 }) => {
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onCancel();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onCancel]);
+
   if (!isOpen) return null;
 
   return (
@@ -21,7 +32,7 @@ export const RestartModal: React.FC<RestartModalProps> = ({
       aria-labelledby="restart-heading"
       className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center animate-fadeIn"
     >
-      <div className="w-full bg-navy-semi py-10 sm:py-11 flex flex-col items-center px-6">
+      <div className="w-full bg-navy-semi py-10 sm:py-11 flex flex-col items-center px-6 animate-popIn">
         <h2
           id="restart-heading"
           className="text-2xl sm:text-4xl font-bold uppercase tracking-wider text-silver mb-6 sm:mb-8"

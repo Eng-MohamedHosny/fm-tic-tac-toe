@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import confetti from 'canvas-confetti';
 import { GameMode, PlayerMark, RoundStatus } from '../../types/game';
 import { Button } from '../common/Button';
 import { IconO, IconX } from '../common/Icons';
@@ -20,6 +21,23 @@ export const RoundOverModal: React.FC<RoundOverModalProps> = ({
   onQuit,
   onNextRound,
 }) => {
+  useEffect(() => {
+    if (status === 'won') {
+      const colors = winner === 'X' ? ['#31C3BD', '#65E9E4'] : ['#F2B137', '#FFC860'];
+      try {
+        confetti({
+          particleCount: 75,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors,
+          disableForReducedMotion: true,
+        });
+      } catch {
+        // Safe fallback if canvas is restricted
+      }
+    }
+  }, [status, winner]);
+
   if (status === 'in-progress') return null;
 
   const getSubheading = () => {
@@ -40,7 +58,7 @@ export const RoundOverModal: React.FC<RoundOverModalProps> = ({
       aria-labelledby="round-result-heading"
       className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center animate-fadeIn"
     >
-      <div className="w-full bg-navy-semi py-10 sm:py-11 flex flex-col items-center px-6">
+      <div className="w-full bg-navy-semi py-10 sm:py-11 flex flex-col items-center px-6 animate-popIn">
         {subheading && (
           <p className="text-silver font-bold uppercase text-xs sm:text-base tracking-widest mb-4">
             {subheading}
